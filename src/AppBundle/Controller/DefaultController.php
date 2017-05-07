@@ -38,26 +38,32 @@ class DefaultController extends Controller
     public function showAction(Post $post, Request $request)
     {
 
-        $comment = new Comment();
-        $comment->setPost($post);
+        $form = null;
 
-        //$comment->setUser($user);
-        $form = $this->createForm(new CommentType(), $comment);
-        $form->handleRequest($request);
-        if ($form->isValid()&& $form->isSubmitted()){
+        if ($user = $this->getUser()){
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
 
-            $this->addFlash('success', "Komentarz został dodany");
+            $comment = new Comment();
+            $comment->setPost($post);
+            $comment->setUser($user);
 
-            return $this->redirectToRoute('post_show', ['id'=>$post->getId()]);
+            $form = $this->createForm(new CommentType(), $comment);
+            $form->handleRequest($request);
+            if ($form->isValid()&& $form->isSubmitted()){
 
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($comment);
+                $em->flush();
+
+                $this->addFlash('success', "Komentarz został dodany");
+
+                return $this->redirectToRoute('post_show', ['id'=>$post->getId()]);
+
+            }
         }
         return [
             'post'=>$post,
-            'form'=> $form->createView()
+            'form'=> is_null($form) ? $form : $form->createView()
         ];
     }
 }
