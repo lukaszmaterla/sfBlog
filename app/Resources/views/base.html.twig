@@ -3,11 +3,30 @@
     <head>
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %} <h1>Blog</h1> {% endblock %}
+    <div class="container">
+        {% block body %} <h1>Blog</h1>
+
+            {% for post in posts  %}
+                <div>
+                    <h2>{{ post.title }}</h2>
+
+                    <p>{{ post.lead }}</p>
+
+                </div>
+        {% endfor %}
+
+            <div class="count">
+                {{ knp_pagination_render(posts) }}
+            </div>
+
+        {% endblock %}
+    </div>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
